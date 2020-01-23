@@ -1,0 +1,11 @@
+version: "3.7"
+services:
+    devbox:
+        build: .
+        restart: always
+        volumes:
+            - /Users/jsatt/devbox_home:/home/jsatt:delegated
+            - /Users/jsatt:/home/jsatt/host:delegated
+            - /home/jsatt/dev:/home/jsatt/dev
+            - /:/vm
+            - /var/run/docker.sock:/var/run/docker.sock
