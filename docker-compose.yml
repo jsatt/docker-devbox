@@ -9,3 +9,5 @@ services:
             - /home/jsatt/dev:/home/jsatt/dev
             - /:/vm
             - /var/run/docker.sock:/var/run/docker.sock
+        ports:
+          - 10350:10350
