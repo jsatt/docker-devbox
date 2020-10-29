@@ -3,11 +3,13 @@ services:
     devbox:
         build: .
         restart: always
-        volumes:
-            - /Users/jsatt/devbox_home:/home/jsatt:delegated
-            - /Users/jsatt:/home/jsatt/host:delegated
-            - /home/jsatt/dev:/home/jsatt/dev
-            - /:/vm
-            - /var/run/docker.sock:/var/run/docker.sock
+        privileged: true
         ports:
           - 10350:10350
+        volumes:
+            - /Users/jsatt/devbox_home:/home/jsatt
+            - /Users/jsatt:/home/jsatt/host
+            - /Users/jsatt/dev:/home/jsatt/dev
+            - /var/run/docker.sock:/run/docker.sock
+            #- /home/jsatt/dev:/home/jsatt/dev
+            #- /:/vm
