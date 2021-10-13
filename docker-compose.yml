@@ -1,15 +1,17 @@
 version: "3.7"
 services:
     devbox:
-        build: .
+        build:
+          context: .
+          args:
+            - USERNAME=${USERNAME:-jsatt}
+            - USER_HOME=${USER_HOME:-/home/jsatt}
         restart: always
         privileged: true
-        ports:
-          - 10350:10350
         volumes:
-            - /Users/jsatt/devbox_home:/home/jsatt
-            - /Users/jsatt:/home/jsatt/host
-            - /Users/jsatt/dev:/home/jsatt/dev
-            - /var/run/docker.sock:/run/docker.sock
-            #- /home/jsatt/dev:/home/jsatt/dev
-            #- /:/vm
+          - ${USER_HOME:-/home/jsatt}/devbox_home:${USER_HOME:-/home/jsatt}
+          - ${USER_HOME:-/home/jsatt}:${USER_HOME:-/home/jsatt}/host
+          - ${USER_HOME:-/home/jsatt}/dev:${USER_HOME:-/home/jsatt}/dev
+          - /var/run/docker.sock:/run/docker.sock
+          #- /home/jsatt/dev:/home/jsatt/dev
+          #- /:/vm
