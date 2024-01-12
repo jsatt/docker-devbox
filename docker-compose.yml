@@ -5,13 +5,22 @@ services:
           context: .
           args:
             - USERNAME=${USERNAME:-jsatt}
-            - USER_HOME=${USER_HOME:-/home/jsatt}
+            - USER_HOME=${HOME:-/home/jsatt}
         restart: always
+        network_mode: host
         privileged: true
         volumes:
-          - ${USER_HOME:-/home/jsatt}/devbox_home:${USER_HOME:-/home/jsatt}
-          - ${USER_HOME:-/home/jsatt}:${USER_HOME:-/home/jsatt}/host
-          - ${USER_HOME:-/home/jsatt}/dev:${USER_HOME:-/home/jsatt}/dev
-          - /var/run/docker.sock:/run/docker.sock
+          - ${HOME:-/home/jsatt}/devbox_home:${USER_HOME:-/home/jsatt}:z
+          - ${HOME:-/home/jsatt}:${USER_HOME:-/home/jsatt}/host:z
+          - ${HOME:-/home/jsatt}/dev:${USER_HOME:-/home/jsatt}/dev:z
+          - lsp_servers:${HOME:-/home/jsatt}/.local/share/nvim
+          - ${DOCKER_SOCK:-/var/run/docker.sock}:/run/docker.sock
+          - gpg_stuff:${HOME:-/home/jsatt}/.gnupg
+          - kubectl:${HOME:-/home/jsatt}/.kube
+          - ${HOME:-/home/jsatt}/.kube/config:${USER_HOME:-/home/jsatt}/.kube/config:z
           #- /home/jsatt/dev:/home/jsatt/dev
           #- /:/vm
+volumes:
+  lsp_servers:
+  gpg_stuff:
+  kubectl:
