@@ -1,27 +1,39 @@
 FROM ubuntu:latest
 
-RUN apt-get update && apt-get install -y locales locales-all apt-utils && rm -rf /var/lib/apt/lists/* \
-    && yes | unminimize
-ENV LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 LANGUAGE=en
 ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && apt-get install -y \
+       locales locales-all apt-utils \
+       sudo whois man-db apt-transport-https ca-certificates curl gnupg-agent software-properties-common \
+    && yes | unminimize \
+    && rm -rf /var/lib/apt/lists/*
+ENV LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 LANGUAGE=en
+
+RUN \
+    # Git PPA
+    curl -fsSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xe1dd270288b4e6030699e45fa1715d88e1df1f24" | gpg --dearmor -o /etc/apt/trusted.gpg.d/git-core.gpg \
+    && echo "deb [signed-by=/etc/apt/trusted.gpg.d/git-core.gpg] https://ppa.launchpadcontent.net/git-core/ppa/ubuntu/ jammy main" > /etc/apt/sources.list.d/git-core.list \
+    # Python PPA
+    && curl -fsSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xf23c5a6cf475977595c89f51ba6932366a755776" | gpg --dearmor -o /etc/apt/trusted.gpg.d/deadsnakes.gpg \
+    && echo "deb [signed-by=/etc/apt/trusted.gpg.d/deadsnakes.gpg] https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu/ $(lsb_release -cs) main" > /etc/apt/sources.list.d/deadsnakes.list \
+    # Docker PPA
+    && curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/trusted.gpg.d/docker.gpg \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/trusted.gpg.d/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list \
+    # K8s PPA
+    && curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key | gpg --dearmor -o /etc/apt/trusted.gpg.d/kubernetes-apt-keyring.gpg \
+    && echo "deb [signed-by=/etc/apt/trusted.gpg.d/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /" > /etc/apt/sources.list.d/kubernetes.list \
+    # Terraform PPA
+    && curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /etc/apt/trusted.gpg.d/hashicorp-archive-keyring.gpg \
+    && echo "deb [signed-by=/etc/apt/trusted.gpg.d/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" > /etc/apt/sources.list.d/hashicorp.list
 
 RUN set -eux \
     && apt-get update \
-    && apt-get install -y sudo whois man-db apt-transport-https ca-certificates curl gnupg-agent software-properties-common \
-    && curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor | tee /etc/apt/trusted.gpg.d/docker.gpg \
-    && curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | gpg --dearmor | tee /etc/apt/trusted.gpg.d/kubernetes.gpg \
-    && curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor | tee /usr/share/keyrings/hashicorp-archive-keyring.gpg \
-    && add-apt-repository ppa:git-core/ppa \
-    && add-apt-repository ppa:deadsnakes/ppa \
-    && add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \
-    && add-apt-repository "deb https://apt.kubernetes.io/ kubernetes-xenial main" \
-    && echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" > /etc/apt/sources.list.d/hashicorp.list \
     && curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - \
     && apt-get install -y \
        vim fuse git zsh silversearcher-ag tmux docker-ce-cli htop libxml2-utils rsync \
        wget unzip inetutils-ping inetutils-traceroute inetutils-telnet dnsutils \
-    && apt-get install -y \
-       python3.8 python3.8-distutils python3.8-dev pythno3.8-venv \
+       python3.8 python3.8-distutils python3.8-dev python3.8-venv \
        python3.9 python3.9-distutils python3.9-dev python3.9-venv \
        python3.10 python3.10-distutils python3.10-dev python3.10-venv\
        python3.11 python3.11-distutils python3.11-dev python3.11-venv\
