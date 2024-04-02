@@ -1,6 +1,7 @@
 version: "3.7"
 services:
     devbox:
+        platform: linux/amd64
         build:
           context: .
           args:
