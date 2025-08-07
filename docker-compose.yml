@@ -1,14 +1,14 @@
 version: "3.7"
 services:
     devbox:
-        platform: linux/amd64
+        # platform: linux/amd66
         build:
           context: .
           args:
             - USERNAME=${USERNAME:-jsatt}
             - USER_HOME=${HOME:-/home/jsatt}
         restart: always
-        network_mode: host
+        # network_mode: host
         privileged: true
         volumes:
           - ${HOME:-/home/jsatt}/devbox_home:${USER_HOME:-/home/jsatt}:z
