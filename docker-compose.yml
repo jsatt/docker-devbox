@@ -1,12 +1,14 @@
 version: "3.7"
 services:
     devbox:
-        # platform: linux/amd66
+        # platform: linux/amd64
         build:
           context: .
           args:
             - USERNAME=${USERNAME:-jsatt}
-            - USER_HOME=${HOME:-/home/jsatt}
+            - USER_HOME=${HOME:-/home/${USERNAME}}
+            - UID=${UID:-1001}
+            - GID=${GID:-${USERNAME}}
         restart: always
         network_mode: host
         privileged: true
@@ -19,7 +21,6 @@ services:
           - gpg_stuff:${HOME:-/home/jsatt}/.gnupg
           - kubectl:${HOME:-/home/jsatt}/.kube
           - ${HOME:-/home/jsatt}/.kube/config:${USER_HOME:-/home/jsatt}/.kube/config:z
-          #- /home/jsatt/dev:/home/jsatt/dev
           #- /:/vm
 volumes:
   lsp_servers:

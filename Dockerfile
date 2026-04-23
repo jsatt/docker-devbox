@@ -48,11 +48,13 @@ RUN set -eux \
     # && /usr/bin/env python3 -m pip install docker-compose "Cython<3.0" --no-build-isolation \
 
 ARG USERNAME=jsatt
-ARG USER_HOME=/home/jsatt
-ENV USERNAME=${USERNAME} USER_HOME=${USER_HOME}
+ARG USER_HOME=/home/${USERNAME}
+ARG UID=1001
+ARG GID=${USERNAME}
+ARG USER_SHELL=/usr/bin/zsh
 
 RUN mkdir -p $USER_HOME \
-    && useradd --home $USER_HOME --shell /usr/bin/zsh $USERNAME \
+    && useradd --home-dir $USER_HOME --shell $USER_SHELL --uid $UID --gid $GID $USERNAME \
     && echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers \
     && adduser $USERNAME root
 
