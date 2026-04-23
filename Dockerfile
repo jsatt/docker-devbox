@@ -31,18 +31,12 @@ RUN \
 
 RUN set -eux \
     && apt-get update \
-    && curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - \
+    && curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash - \
     && apt-get install -y \
        vim fuse git zsh silversearcher-ag tmux docker-ce-cli htop libxml2-utils rsync fd-find ripgrep \
        wget unzip inetutils-ping inetutils-traceroute inetutils-telnet dnsutils \
-       python3.8 python3.8-distutils python3.8-dev python3.8-venv \
-       python3.9 python3.9-distutils python3.9-dev python3.9-venv \
-       python3.10 python3.10-distutils python3.10-dev python3.10-venv \
-       python3.11 python3.11-distutils python3.11-dev python3.11-venv \
-       python3.12 python3.12-dev python3.12-venv \
-       python3.13 python3.13-dev python3.13-venv \
+       python3 python3-dev python3-venv \
        python3-pip \
-       openjdk-21-jdk \
        nodejs \
        kubectl \
        terraform \
